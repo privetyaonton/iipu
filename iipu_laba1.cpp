@@ -50,7 +50,7 @@ int main()
 
 void GetTypeBattery()
 {
-	HDEVINFO DeviceInfoSet;
+	/* HDEVINFO DeviceInfoSet;
 	DeviceInfoSet = SetupDiGetClassDevs(&GUID_DEVCLASS_BATTERY, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
 	SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = { 0 };
@@ -81,12 +81,13 @@ void GetTypeBattery()
 
 	for (int b = 0; b < 4; b++)
 	{
-		cout << BatteryInfo.Chemistry[b];
-	};
+		cout << (int)BatteryInfo.Chemistry[b] << " ";
+	}
+	cout << endl;
 
 	LocalFree(pdidd);
-	SetupDiDestroyDeviceInfoList(DeviceInfoSet);
-	/* HDEVINFO DeviceInfoSet = SetupDiGetClassDevsA(&GUID_DEVCLASS_BATTERY, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	SetupDiDestroyDeviceInfoList(DeviceInfoSet);*/
+	HDEVINFO DeviceInfoSet = SetupDiGetClassDevsA(&GUID_DEVCLASS_BATTERY, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 	if (DeviceInfoSet != INVALID_HANDLE_VALUE)
 	{
 		SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = { 0 };
@@ -119,18 +120,21 @@ void GetTypeBattery()
 
 			BOOL WorkFunction = DeviceIoControl(hDevice, IOCTL_BATTERY_QUERY_INFORMATION, &BatteryQueryInformation, sizeof(BatteryQueryInformation), &BatteryInfo, sizeof(BatteryInfo), &dwOut, NULL);
 
-			if (WorkFunction == ERROR_INVALID_FUNCTION) cout << "Unable to determine battery type" << endl;
-			else
+			//if (WorkFunction == ERROR_INVALID_FUNCTION) cout << "Unable to determine battery type" << endl;
+			//else
+			//{
+			if (BatteryInfo.Chemistry[0])
 			{
 				for (int i = 0; i < 4; i++)
 					cout << BatteryInfo.Chemistry[i];
 				cout << endl;
 			}
+			//}
 		}
 
 		LocalFree(DeviceInterfaceDetailData);
 		SetupDiDestroyDeviceInfoList(DeviceInfoSet);
-	}*/
+	}
 }
 
 void thread_func()
